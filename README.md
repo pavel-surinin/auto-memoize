@@ -2,6 +2,7 @@
 Fast javascript memoize function, with optimized memoize strategies provided.
 
 [![Build Status](https://travis-ci.com/pavel-surinin/auto-memoize.svg?branch=master)](https://travis-ci.com/pavel-surinin/auto-memoize)
+[![Coverage Status](https://coveralls.io/repos/github/pavel-surinin/auto-memoize/badge.svg?branch=master)](https://coveralls.io/github/pavel-surinin/auto-memoize?branch=master)
 
 ## Install
 ```bash
@@ -9,7 +10,6 @@ npm i -S auto-memoize
 ```
 
 ## Browser support
-
 Used browserlist 'best practices' [configuration](https://github.com/browserslist/browserslist#best-practices).
 
 | Mobile	| Desktop   	|
