@@ -118,4 +118,4 @@ Typings includes types for:
  - memoized function parameters
  - memoized function return type
   
-![alt text](./docs/memoize.gif "Typescript typings")
+![alt text](https://github.com/pavel-surinin/auto-memoize/blob/master/docs/memoize.gif?raw=true "Typescript typings")
