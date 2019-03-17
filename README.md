@@ -1,6 +1,8 @@
 # auto-memoize
 Fast javascript memoize function, with optimized memoize strategies provided.
 
+[![Build Status](https://travis-ci.com/pavel-surinin/auto-memoize.svg?branch=master)](https://travis-ci.com/pavel-surinin/auto-memoize)
+
 ## Install
 ```bash
 npm i -S auto-memoize
