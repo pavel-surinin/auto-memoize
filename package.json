@@ -1,0 +1,39 @@
+{
+  "name": "memo-hash",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "types": "index.ts",
+  "scripts": {
+    "test": "jest",
+    "compile": "tsc",
+    "lint": "tslint -c tslint.json -p tsconfig.json -t stylish",
+    "test:coverage": "npm test -- --coverage",
+    "delete:target": "rm -rf target",
+    "babel": "./node_modules/.bin/babel ./target/js-ts --out-dir ./target/js-babel",
+    "build": "npm run delete:target && npm run lint && npm run compile && npm run test:coverage",
+    "copy": "cp package.json target/out/package.json && cp README.md target/out/README.md && cp LICENCE target/out/LICENCE",
+    "publish:patch": "npm run build && npm version patch && npm run copy && npm publish target/out",
+    "publish:minor": "npm run build && npm version minor && npm run copy && npm publish target/out",
+    "publish:major": "npm run build && npm version major && npm run copy && npm publish target/out",
+    "coveralls": "cat target/coverage/lcov.info | coveralls"
+  },
+  "author": "Pavel Surinin <pavel.surinin@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "24.0.11",
+    "@babel/cli": "7.2.3",
+    "@babel/core": "7.2.2",
+    "@babel/polyfill": "7.2.5",
+    "@babel/preset-env": "7.3.1",
+    "benchmark": "2.1.4",
+    "coveralls": "3.0.2",
+    "jest": "24.4.0",
+    "ts-jest": "24.0.0",
+    "tslint": "5.14.0",
+    "typescript": "3.3.3333"
+  },
+  "dependencies": {
+    "fast-deep-equal": "2.0.1"
+  }
+}
