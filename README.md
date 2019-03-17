@@ -20,7 +20,6 @@ Used browserlist 'best practices' [configuration](https://github.com/browserslis
 | iOS Safari11.3	| Firefox 60 |
 | IE Mobile11  |   	|
 | Android Browser4.4.3 |   	|
-|  |  |
 
 ## Typescript support
 Typings includes types for: 
