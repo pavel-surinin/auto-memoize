@@ -4,5 +4,5 @@ module.exports = {
   testEnvironment: 'node',
   preset: 'ts-jest/presets/js-with-ts',
   cacheDirectory: "./target/jest-cache/",
-  coverageDirectory: "./target/jest-coverage/"
+  coverageDirectory: "./target/coverage/"
 }
