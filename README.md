@@ -3,41 +3,19 @@ Fast javascript memoize function, with optimized memoize strategies provided.
 
 [![Build Status](https://travis-ci.com/pavel-surinin/auto-memoize.svg?branch=master)](https://travis-ci.com/pavel-surinin/auto-memoize)
 [![Coverage Status](https://coveralls.io/repos/github/pavel-surinin/auto-memoize/badge.svg?branch=master)](https://coveralls.io/github/pavel-surinin/auto-memoize?branch=master)
-
+[![npm version](https://badge.fury.io/js/auto-memoize.svg)](https://badge.fury.io/js/auto-memoize)
 ## Install
 ```bash
 npm i -S auto-memoize
 ```
-
-## Browser support
-Used browserlist 'best practices' [configuration](https://github.com/browserslist/browserslist#best-practices).
-
-| Mobile	| Desktop   	|
-|---	|---	|
-| Chrome for Android71 | Chrome49 |
-| Firefox for Android64 | Edge 17 |
-| Samsung Internet4 | IE11 |
-| Opera Mobile46  	| Opera 56 |
-| Opera Miniall | Safari 11.1 |
-| iOS Safari11.3	| Firefox 60 |
-| IE Mobile11  |   	|
-| Android Browser4.4.3 |   	|
-
-## Typescript support
-Typings includes types for: 
- - resolve key callback,
- - memoized function parameters
- - memoized function return type
-  
-![alt text](./docs/memoize.gif "Typescript typings")
-
-## Features
-
+## Docs
   - [Default implementation](#default-implementation)
   - [WeakMap implementation](#weakmap-implementation)
   - [Deep comparison implementation](#deep-comparison-implementation)
   - [String key implementation](#string-key-implementation)
   - [Custom key implementation](#custom-key-implementation)
+  - [Browser support](#browser-support)
+  - [Typescript support](#typescript-support)
 
 ## Default implementation
 
@@ -119,3 +97,25 @@ memoCalc(param)
 memoCalc(param) // cache hit
 memoCalc({a: 'one'}) // cache hit
 ```
+
+## Browser support
+Used browserlist 'best practices' [configuration](https://github.com/browserslist/browserslist#best-practices).
+
+| Mobile	| Desktop   	|
+|---	|---	|
+| Chrome for Android71 | Chrome49 |
+| Firefox for Android64 | Edge 17 |
+| Samsung Internet4 | IE11 |
+| Opera Mobile46  	| Opera 56 |
+| Opera Miniall | Safari 11.1 |
+| iOS Safari11.3	| Firefox 60 |
+| IE Mobile11  |   	|
+| Android Browser4.4.3 |   	|
+
+## Typescript support
+Typings includes types for: 
+ - resolve key callback,
+ - memoized function parameters
+ - memoized function return type
+  
+![alt text](./docs/memoize.gif "Typescript typings")
