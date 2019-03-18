@@ -1,6 +1,6 @@
 {
   "name": "auto-memoize",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Memoize function with predifined caching strategies",
   "main": "index.js",
   "types": "index.d.ts",
