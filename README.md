@@ -103,42 +103,60 @@ memoCalc({a: 'one'}) // cache hit
 
 ### Small object parameter
 ```javascript
-const simple = {data: {p1: {name: 's'}}}
+const simple = {
+  data: {
+    p1: {
+      name: 'auto-memoize'
+      }
+    }
+  }
 memoized(simple, 1, 1)
 ```
-| | Strategy | ops/sec |
-| --- |---| --- |
-| 1| callback | 4,765,946 |
-| 2| weak | 3,751,169 |
-| 3| deep | 1,211,864 | 
-| 4| default | 1,004,562 |
-| 5| string | 341,206 |
+|     | Strategy | ops/sec   |
+| --- | -------- | --------- |
+| 1   | callback | 4,765,946 |
+| 2   | weak     | 3,751,169 |
+| 3   | deep     | 1,211,864 |
+| 4   | default  | 1,004,562 |
+| 5   | string   | 341,206   |
 
 ### Object parameter
 ```javascript
 const data = { ...3 package.json }
 memoized(data, 1, 1)
 ```
-| | Strategy | ops/sec |
-| --- |---| --- |
-| 1| callback | 5,131,611 |
-| 2| weak | 2,663,508 |
-| 3| default | 992,947 |
-| 4| deep | 832,758 | 
-| 5| string | 33,763 |
+|     | Strategy | ops/sec   |
+| --- | -------- | --------- |
+| 1   | callback | 5,131,611 |
+| 2   | weak     | 2,663,508 |
+| 3   | default  | 992,947   |
+| 4   | deep     | 832,758   |
+| 5   | string   | 33,763    |
 
 ### Different reference object parameter
 ```javascript
 const data = { ...3 package.json }
 memoized(Object.assign({}, data), 1, 1)
 ```
-| | Strategy | ops/sec | |
-| --- |---| --- | --- |
-| 1| callback | 2,195,159 | |
-| 2| deep | 708,301 |  |
-| 3| string | 33,098 | |
-| | weak | 833,162 | n/a |
-| | default | 1,484 | n/a  |
+|     | Strategy | ops/sec   |     |
+| --- | -------- | --------- | --- |
+| 1   | callback | 2,195,159 |     |
+| 2   | deep     | 708,301   |     |
+| 3   | string   | 33,098    |     |
+|     | weak     | 833,162   | n/a |
+|     | default  | 1,484     | n/a |
+
+### Primitive parameters
+```javascript
+memoized("argument", 1, true)
+```
+|     | Strategy | ops/sec   |     |
+| --- | -------- | --------- | --- |
+| 1   | callback | 3,340,699 |     |
+| 2   | deep     | 1,320,397 |     |
+| 3   | default  | 1,330,912 |     |
+| 4   | string   | 548,254   |     |
+|     | weak     |           | n/a |
 
 ## Browser support
 Used browserlist 'best practices' [configuration](https://github.com/browserslist/browserslist#best-practices).
