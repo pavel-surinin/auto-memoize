@@ -1,3 +1,7 @@
+export const OriginalName = Symbol('original-name')
+
+export interface MemoizedProperties {[OriginalName]: string}
+
 export type MemoFunctionArg5<P1, P2, P3, P4, P5, R> = (p1: P1, p2: P2, p3: P3, p4: P4, p5: P5) => R
 export type MemoFunctionArg4<P1, P2, P3, P4, R> = (p1: P1, p2: P2, p3: P3, p4: P4) => R
 export type MemoFunctionArg3<P1, P2, P3, R> = (p1: P1, p2: P2, p3: P3) => R
@@ -27,3 +31,7 @@ export interface MemoStrategy<R> {
     cache: CacheMap<any, R>,
     unwrap: Function
 }
+
+export type StrategyName = 'deep' | 'string' | 'weak' | 'default'
+
+export type MemoizeOptions<T> = T | StrategyName

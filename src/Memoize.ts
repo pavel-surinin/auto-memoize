@@ -8,12 +8,13 @@ import {
     MemoFunctionArg4,
     MemoFunctionArg5,
     MemoFunctionNoArg,
-    MemoStrategy
+    MemoizedProperties,
+    MemoizeOptions,
+    MemoStrategy,
+    OriginalName,
+    StrategyName
 } from './types'
 
-export type StrategyName = 'deep' | 'string' | 'weak' | 'default'
-
-export type MemoizeOptions<T> = T | StrategyName
 /**
  * Memoize function accepts function as a paramter and returns function with
  * cache. If same parameters were passed to function, this function will return
@@ -56,7 +57,7 @@ export type MemoizeOptions<T> = T | StrategyName
  */
 export function memoize<R>(
     func: MemoFunctionNoArg<R>, resolveKey?: MemoizeOptions<MemoFunctionNoArg<string>>
-): MemoFunctionNoArg<R>
+): MemoFunctionNoArg<R> & MemoizedProperties
 /**
  * Memoize function accepts function as a paramter and returns function with
  * cache. If same parameters were passed to function, this function will return
@@ -99,7 +100,7 @@ export function memoize<R>(
  */
 export function memoize<P1, R>(
     func: MemoFunctionArg1<P1, R>, resolveKey?: MemoizeOptions<MemoFunctionArg1<P1, string>>
-): MemoFunctionArg1<P1, R>
+): MemoFunctionArg1<P1, R> & MemoizedProperties
 /**
  * Memoize function accepts function as a paramter and returns function with
  * cache. If same parameters were passed to function, this function will return
@@ -142,7 +143,7 @@ export function memoize<P1, R>(
  */
 export function memoize<P1, P2, R>(
     func: MemoFunctionArg2<P1, P2, R>, resolveKey?: MemoizeOptions<MemoFunctionArg2<P1, P2, string>>
-): MemoFunctionArg2<P1, P2, R>
+): MemoFunctionArg2<P1, P2, R> & MemoizedProperties
 /**
  * Memoize function accepts function as a paramter and returns function with
  * cache. If same parameters were passed to function, this function will return
@@ -185,7 +186,7 @@ export function memoize<P1, P2, R>(
  */
 export function memoize<P1, P2, P3, R>(
     func: MemoFunctionArg3<P1, P2, P3, R>, resolveKey?: MemoizeOptions<MemoFunctionArg3<P1, P2, P3, string>>
-): MemoFunctionArg3<P1, P2, P3, R>
+): MemoFunctionArg3<P1, P2, P3, R> & MemoizedProperties
 /**
  * Memoize function accepts function as a paramter and returns function with
  * cache. If same parameters were passed to function, this function will return
@@ -228,7 +229,7 @@ export function memoize<P1, P2, P3, R>(
  */
 export function memoize<P1, P2, P3, P4, R>(
     func: MemoFunctionArg4<P1, P2, P3, P4, R>, resolveKey?: MemoizeOptions<MemoFunctionArg4<P1, P2, P3, P4, string>>
-): MemoFunctionArg4<P1, P2, P3, P4, R>
+): MemoFunctionArg4<P1, P2, P3, P4, R> & MemoizedProperties
 /**
  * Memoize function accepts function as a paramter and returns function with
  * cache. If same parameters were passed to function, this function will return
@@ -272,7 +273,7 @@ export function memoize<P1, P2, P3, P4, R>(
 export function memoize<P1, P2, P3, P4, P5, R>(
     func: MemoFunctionArg5<P1, P2, P3, P4, P5, R>,
     resolveKey?: MemoizeOptions<MemoFunctionArg5<P1, P2, P3, P4, P5, string>>
-): MemoFunctionArg5<P1, P2, P3, P4, P5, R>
+): MemoFunctionArg5<P1, P2, P3, P4, P5, R> & MemoizedProperties
 
 /**
  * Memoize function accepts function as a paramter and returns function with
@@ -317,17 +318,24 @@ export function memoize<P1, P2, P3, P4, P5, R>(
 export function memoize<R>(
     func: (...p: unknown[]) => R,
     options: MemoizeOptions<(...p: unknown[]) => string> = 'default'
-): (...p: unknown[]) => R {
+): (...p: unknown[]) => R & MemoizedProperties {
     const strategy = resolveStrategy<R>(options)
-    return function memoApply(...parameters: unknown[]): R {
+    const memoizedFunction = function memoized(this: Function, ...parameters: unknown[]): R {
         const key = strategy.unwrap(...parameters)
         if (strategy.cache.has(key)) {
             return strategy.cache.get(key)!
         }
-        const result = func.apply(func, parameters)
+        const result = func.apply(this, parameters)
         strategy.cache.set(key, result)
         return result
     }
+    Object.defineProperty(memoizedFunction, OriginalName, {
+        configurable: false,
+        enumerable: false,
+        value: `memoized[ ${func.name} ]`,
+        writable: false
+    })
+    return memoizedFunction as (...p: unknown[]) => R & MemoizedProperties
 }
 
 const strategies: Record<StrategyName, {getCache: () => CacheMap<any, any>, key: Function}> = {

@@ -1,5 +1,6 @@
 import { ArrayKeyMap } from '../src/ArrayKeyMap'
 import { memoize } from '../src/Memoize'
+import { OriginalName } from '../src/types'
 
 function sum(a: number, b: number): number {
     return a + b
@@ -132,6 +133,7 @@ describe('Memoize', () => {
         })
         it('should execute function', () => {
             const memoSum = memoize(sum)
+            expect(memoSum[OriginalName]).toBe('memoized[ sum ]')
             expect(memoSum(1, 1)).toBe(2)
             expect(memoSum(1, 2)).toBe(3)
         })
