@@ -1,2 +1,2 @@
-export { memoize } from './Memoize'
+export * from './Memoize'
 export * from './types'

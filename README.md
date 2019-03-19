@@ -22,7 +22,7 @@ npm i -S auto-memoize
 Caches by all parameters as a key and comparing them with `Object.is` [algorithm](https://www.ecma-international.org/ecma-262/6.0/#sec-object.is)
 ```javascript
 const calc = require('expensive-calculation')
-const memoize = require('memoize.js')
+const { memoize } = require('memoize.js')
 
 const memoCalc = memoize(calc)
 
@@ -37,7 +37,7 @@ memoCalc({a: 'one'}, 1) // no cache hit, because reference is different
 Caches by first parameter as a key and using ES6 [WeakMap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap) as a cache. Garbage collector automatically removes entries from cache when no references for keys are not present.
 ```javascript
 const calc = require('expensive-calculation')
-const memoize = require('memoize.js')
+const { memoize } = require('memoize.js')
 
 const memoCalc = memoize(calc, 'weak')
 
@@ -54,7 +54,7 @@ npm package does the comparison.
 It is performing better on big objects, that `JSON.stringify`.
 ```javascript
 const calc = require('expensive-calculation')
-const memoize = require('memoize.js')
+const { memoize } = require('memoize.js')
 
 const memoCalc = memoize(calc, 'deep')
 
@@ -72,7 +72,7 @@ ES6 [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Glob
 
 ```javascript
 const calc = require('expensive-calculation')
-const memoize = require('memoize.js')
+const { memoize } = require('memoize.js')
 
 const memoCalc = memoize(calc, 'string')
 
@@ -88,7 +88,7 @@ Caches by key from function, that returns `string`. For cache is used ES6 [Map](
 
 ```javascript
 const calc = require('expensive-calculation')
-const memoize = require('memoize.js')
+const { memoize } = require('memoize.js')
 
 const memoCalc = memoize(calc, (p) => p.a)
 
