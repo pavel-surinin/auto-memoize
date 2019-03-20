@@ -21,6 +21,10 @@
       "url": "https://coveralls.io/repos/github/pavel-surinin/auto-memoize/badge.svg?branch=master"
     }
   ],
+  "bugs": {
+    "url": "https://github.com/pavel-surinin/auto-memoize/issues",
+    "email": "pavel.surinin@gmail.com"
+  },
   "scripts": {
     "test": "jest",
     "compile": "tsc",
