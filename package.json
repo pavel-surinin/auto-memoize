@@ -4,6 +4,23 @@
   "description": "Memoize function with predifined caching strategies",
   "main": "index.js",
   "types": "index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pavel-surinin/auto-memoize"
+  },
+  "keywords": ["memoize", "cache", "functional", "javascript", "typescript"],
+  "badges": [
+    {
+      "description": "Travis CI build",
+      "href": "https://travis-ci.com/pavel-surinin/auto-memoize",
+      "url": "https://travis-ci.com/pavel-surinin/auto-memoize.svg?branch=master"
+    },
+    {
+      "description": "Code coverage",
+      "href": "https://coveralls.io/github/pavel-surinin/auto-memoize?branch=master",
+      "url": "https://coveralls.io/repos/github/pavel-surinin/auto-memoize/badge.svg?branch=master"
+    }
+  ],
   "scripts": {
     "test": "jest",
     "compile": "tsc",
