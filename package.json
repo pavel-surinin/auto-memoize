@@ -1,6 +1,6 @@
 {
   "name": "auto-memoize",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Memoize function with predifined caching strategies",
   "main": "index.js",
   "types": "index.d.ts",
@@ -8,7 +8,13 @@
     "type": "git",
     "url": "https://github.com/pavel-surinin/auto-memoize"
   },
-  "keywords": ["memoize", "cache", "functional", "javascript", "typescript"],
+  "keywords": [
+    "memoize",
+    "cache",
+    "functional",
+    "javascript",
+    "typescript"
+  ],
   "badges": [
     {
       "description": "Travis CI build",
