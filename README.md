@@ -15,7 +15,6 @@ npm i -S auto-memoize
   - [String key implementation](#string-key-implementation)
   - [Custom key implementation](#custom-key-implementation)
   - [Benchmarking strategies](#benchmarking-strategies)
-  - [Browser support](#browser-support)
   - [Typescript support](#typescript-support)
 
 ## Default implementation
@@ -157,20 +156,6 @@ memoized("argument", 1, true)
 | 3   | default  | 1,330,912 |     |
 | 4   | string   | 548,254   |     |
 |     | weak     |           | n/a |
-
-## Browser support
-Used browserlist 'best practices' [configuration](https://github.com/browserslist/browserslist#best-practices).
-
-| Mobile	| Desktop   	|
-|---	|---	|
-| Chrome for Android71 | Chrome49 |
-| Firefox for Android64 | Edge 17 |
-| Samsung Internet4 | IE11 |
-| Opera Mobile46  	| Opera 56 |
-| Opera Miniall | Safari 11.1 |
-| iOS Safari11.3	| Firefox 60 |
-| IE Mobile11  |   	|
-| Android Browser4.4.3 |   	|
 
 ## Typescript support
 Typings includes types for: 
