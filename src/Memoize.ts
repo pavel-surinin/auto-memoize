@@ -1,13 +1,9 @@
 import equals from 'fast-deep-equal'
 import { ArrayKeyMap } from './ArrayKeyMap'
+import { FullWeakMap } from './FullWeakMap'
 import {
     CacheMap,
-    MemoFunctionArg1,
-    MemoFunctionArg2,
-    MemoFunctionArg3,
-    MemoFunctionArg4,
-    MemoFunctionArg5,
-    MemoFunctionNoArg,
+    MemoizeCache,
     MemoizedProperties,
     MemoizeOptions,
     MemoStrategy,
@@ -16,264 +12,44 @@ import {
 } from './types'
 
 /**
- * Memoize function accepts function as a paramter and returns function with
- * cache. If same parameters were passed to function, this function will return
- * result from cache.
+ * Extracts cache from:
+ * memoized function,
+ * decorated with 'CreateOnce' or 'CreateOnceBy' class,
+ * decorated with 'CallOnce' or 'CallOnceBy' class method.
+ * {@link memoize} funtion has cache description.
  *
- * @param {Function} func function to memoize
- * @param {Function | string} options option can be callback to resolve key or
- * predefined strategies for caching name. This parameter is optional.
- * 'default' parameter is default
- *  - (parameters) => string - callback to resolve key, inner cache is ES6 kMap
- *  - 'deep' - compares parameters to be deep equal,
- *  with npm package 'fast-dee-equal'
- *  - 'string' - turns parameters in to string with JSON.stringify, inner cache
- *  is ES6 Map
- *  - 'weak' - uses first paramter, that must be typeof object as a key, inner
- * cache is ES6 WeakMap
- *  - 'default' - compares parameters with Object.is algorithm
- * @returns function returning cached results with same contract as function
- *          in first paramter
+ * @param memoized that contains cache
+ * @returns memoize Cache if it is present, if no {@code undefined} is returned
+ *
+ * @see memoize
+ * @see CreateOnce
+ * @see CreateOnceBy
+ * @see CallOnce
+ * @see CallOnceBy
+ * @since 1.0.12
+ *
  * @example
- *  const memoCalculate = memoize(calculate)
- *  const param = {a: 'one'}
- *  memo(param)
- *  memo(param) // cache hit
- *  memo({a: 'one'}) // no cache hit, because reference is different
+ * const memo = memoize(fibo)
+ * memo(5)
  *
- *  const memoD = memoize(calculate, 'deep')
- *  memoD(param)
- *  memoD(param) // cache hit
- *  memoD({a: 'one'}) // cache hit
+ * getCache(memo).has([5]) // true
+ * getCache(memo).clear()
+ * getCache(memo).has([5]) // false
  *
- *  const memoC = memoize(calculate, p => p.a)
- *  memoC(param)
- *  memoC(param) // cache hit
- *  memoC({a: 'one'}) // cache hit
+ * // cache from  decorated 'CreateOnce' or 'CreateOnceBy' class
+ * getCache(ClassDecorated)
  *
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap
- * @see https://www.ecma-international.org/ecma-262/6.0/#sec-object.is
- * @see https://www.npmjs.com/package/fast-deep-equal
+ * // cache from  decorated 'CallOnce' or 'CallOnceBy' class
+ * const person = new Person('A', 'B')
+ * getCache(person.greet)
  */
-export function memoize<R>(
-    func: MemoFunctionNoArg<R>, resolveKey?: MemoizeOptions<MemoFunctionNoArg<string>>
-): MemoFunctionNoArg<R> & MemoizedProperties
-/**
- * Memoize function accepts function as a paramter and returns function with
- * cache. If same parameters were passed to function, this function will return
- * result from cache.
- *
- * @param {Function} func function to memoize
- * @param {Function | string} options option can be callback to resolve key or
- * predefined strategies for caching name. This parameter is optional.
- * 'default' parameter is default
- *  - (parameters) => string - callback to resolve key, inner cache is ES6 kMap
- *  - 'deep' - compares parameters to be deep equal,
- *  with npm package 'fast-dee-equal'
- *  - 'string' - turns parameters in to string with JSON.stringify, inner cache
- *  is ES6 Map
- *  - 'weak' - uses first paramter, that must be typeof object as a key, inner
- * cache is ES6 WeakMap
- *  - 'default' - compares parameters with Object.is algorithm
- * @returns function returning cached results with same contract as function
- *          in first paramter
- * @example
- *  const memoCalculate = memoize(calculate)
- *  const param = {a: 'one'}
- *  memo(param)
- *  memo(param) // cache hit
- *  memo({a: 'one'}) // no cache hit, because reference is different
- *
- *  const memoD = memoize(calculate, 'deep')
- *  memoD(param)
- *  memoD(param) // cache hit
- *  memoD({a: 'one'}) // cache hit
- *
- *  const memoC = memoize(calculate, p => p.a)
- *  memoC(param)
- *  memoC(param) // cache hit
- *  memoC({a: 'one'}) // cache hit
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap
- * @see https://www.ecma-international.org/ecma-262/6.0/#sec-object.is
- * @see https://www.npmjs.com/package/fast-deep-equal
- */
-export function memoize<P1, R>(
-    func: MemoFunctionArg1<P1, R>, resolveKey?: MemoizeOptions<MemoFunctionArg1<P1, string>>
-): MemoFunctionArg1<P1, R> & MemoizedProperties
-/**
- * Memoize function accepts function as a paramter and returns function with
- * cache. If same parameters were passed to function, this function will return
- * result from cache.
- *
- * @param {Function} func function to memoize
- * @param {Function | string} options option can be callback to resolve key or
- * predefined strategies for caching name. This parameter is optional.
- * 'default' parameter is default
- *  - (parameters) => string - callback to resolve key, inner cache is ES6 kMap
- *  - 'deep' - compares parameters to be deep equal,
- *  with npm package 'fast-dee-equal'
- *  - 'string' - turns parameters in to string with JSON.stringify, inner cache
- *  is ES6 Map
- *  - 'weak' - uses first paramter, that must be typeof object as a key, inner
- * cache is ES6 WeakMap
- *  - 'default' - compares parameters with Object.is algorithm
- * @returns function returning cached results with same contract as function
- *          in first paramter
- * @example
- *  const memoCalculate = memoize(calculate)
- *  const param = {a: 'one'}
- *  memo(param)
- *  memo(param) // cache hit
- *  memo({a: 'one'}) // no cache hit, because reference is different
- *
- *  const memoD = memoize(calculate, 'deep')
- *  memoD(param)
- *  memoD(param) // cache hit
- *  memoD({a: 'one'}) // cache hit
- *
- *  const memoC = memoize(calculate, p => p.a)
- *  memoC(param)
- *  memoC(param) // cache hit
- *  memoC({a: 'one'}) // cache hit
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap
- * @see https://www.ecma-international.org/ecma-262/6.0/#sec-object.is
- * @see https://www.npmjs.com/package/fast-deep-equal
- */
-export function memoize<P1, P2, R>(
-    func: MemoFunctionArg2<P1, P2, R>, resolveKey?: MemoizeOptions<MemoFunctionArg2<P1, P2, string>>
-): MemoFunctionArg2<P1, P2, R> & MemoizedProperties
-/**
- * Memoize function accepts function as a paramter and returns function with
- * cache. If same parameters were passed to function, this function will return
- * result from cache.
- *
- * @param {Function} func function to memoize
- * @param {Function | string} options option can be callback to resolve key or
- * predefined strategies for caching name. This parameter is optional.
- * 'default' parameter is default
- *  - (parameters) => string - callback to resolve key, inner cache is ES6 kMap
- *  - 'deep' - compares parameters to be deep equal,
- *  with npm package 'fast-dee-equal'
- *  - 'string' - turns parameters in to string with JSON.stringify, inner cache
- *  is ES6 Map
- *  - 'weak' - uses first paramter, that must be typeof object as a key, inner
- * cache is ES6 WeakMap
- *  - 'default' - compares parameters with Object.is algorithm
- * @returns function returning cached results with same contract as function
- *          in first paramter
- * @example
- *  const memoCalculate = memoize(calculate)
- *  const param = {a: 'one'}
- *  memo(param)
- *  memo(param) // cache hit
- *  memo({a: 'one'}) // no cache hit, because reference is different
- *
- *  const memoD = memoize(calculate, 'deep')
- *  memoD(param)
- *  memoD(param) // cache hit
- *  memoD({a: 'one'}) // cache hit
- *
- *  const memoC = memoize(calculate, p => p.a)
- *  memoC(param)
- *  memoC(param) // cache hit
- *  memoC({a: 'one'}) // cache hit
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap
- * @see https://www.ecma-international.org/ecma-262/6.0/#sec-object.is
- * @see https://www.npmjs.com/package/fast-deep-equal
- */
-export function memoize<P1, P2, P3, R>(
-    func: MemoFunctionArg3<P1, P2, P3, R>, resolveKey?: MemoizeOptions<MemoFunctionArg3<P1, P2, P3, string>>
-): MemoFunctionArg3<P1, P2, P3, R> & MemoizedProperties
-/**
- * Memoize function accepts function as a paramter and returns function with
- * cache. If same parameters were passed to function, this function will return
- * result from cache.
- *
- * @param {Function} func function to memoize
- * @param {Function | string} options option can be callback to resolve key or
- * predefined strategies for caching name. This parameter is optional.
- * 'default' parameter is default
- *  - (parameters) => string - callback to resolve key, inner cache is ES6 kMap
- *  - 'deep' - compares parameters to be deep equal,
- *  with npm package 'fast-dee-equal'
- *  - 'string' - turns parameters in to string with JSON.stringify, inner cache
- *  is ES6 Map
- *  - 'weak' - uses first paramter, that must be typeof object as a key, inner
- * cache is ES6 WeakMap
- *  - 'default' - compares parameters with Object.is algorithm
- * @returns function returning cached results with same contract as function
- *          in first paramter
- * @example
- *  const memoCalculate = memoize(calculate)
- *  const param = {a: 'one'}
- *  memo(param)
- *  memo(param) // cache hit
- *  memo({a: 'one'}) // no cache hit, because reference is different
- *
- *  const memoD = memoize(calculate, 'deep')
- *  memoD(param)
- *  memoD(param) // cache hit
- *  memoD({a: 'one'}) // cache hit
- *
- *  const memoC = memoize(calculate, p => p.a)
- *  memoC(param)
- *  memoC(param) // cache hit
- *  memoC({a: 'one'}) // cache hit
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap
- * @see https://www.ecma-international.org/ecma-262/6.0/#sec-object.is
- * @see https://www.npmjs.com/package/fast-deep-equal
- */
-export function memoize<P1, P2, P3, P4, R>(
-    func: MemoFunctionArg4<P1, P2, P3, P4, R>, resolveKey?: MemoizeOptions<MemoFunctionArg4<P1, P2, P3, P4, string>>
-): MemoFunctionArg4<P1, P2, P3, P4, R> & MemoizedProperties
-/**
- * Memoize function accepts function as a paramter and returns function with
- * cache. If same parameters were passed to function, this function will return
- * result from cache.
- *
- * @param {Function} func function to memoize
- * @param {Function | string} options option can be callback to resolve key or
- * predefined strategies for caching name. This parameter is optional.
- * 'default' parameter is default
- *  - (parameters) => string - callback to resolve key, inner cache is ES6 kMap
- *  - 'deep' - compares parameters to be deep equal,
- *  with npm package 'fast-dee-equal'
- *  - 'string' - turns parameters in to string with JSON.stringify, inner cache
- *  is ES6 Map
- *  - 'weak' - uses first paramter, that must be typeof object as a key, inner
- * cache is ES6 WeakMap
- *  - 'default' - compares parameters with Object.is algorithm
- * @returns function returning cached results with same contract as function
- *          in first paramter
- * @example
- *  const memoCalculate = memoize(calculate)
- *  const param = {a: 'one'}
- *  memo(param)
- *  memo(param) // cache hit
- *  memo({a: 'one'}) // no cache hit, because reference is different
- *
- *  const memoD = memoize(calculate, 'deep')
- *  memoD(param)
- *  memoD(param) // cache hit
- *  memoD({a: 'one'}) // cache hit
- *
- *  const memoC = memoize(calculate, p => p.a)
- *  memoC(param)
- *  memoC(param) // cache hit
- *  memoC({a: 'one'}) // cache hit
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap
- * @see https://www.ecma-international.org/ecma-262/6.0/#sec-object.is
- * @see https://www.npmjs.com/package/fast-deep-equal
- */
-export function memoize<P1, P2, P3, P4, P5, R>(
-    func: MemoFunctionArg5<P1, P2, P3, P4, P5, R>,
-    resolveKey?: MemoizeOptions<MemoFunctionArg5<P1, P2, P3, P4, P5, string>>
-): MemoFunctionArg5<P1, P2, P3, P4, P5, R> & MemoizedProperties
+// tslint:disable-next-line: ban-types
+export function getCache<K, V>(memoized: ((...args: any[]) => V) | Object): CacheMap<K, V> | undefined {
+    if (Object.getOwnPropertySymbols(memoized).includes(MemoizeCache)) {
+        return (memoized as object & MemoizedProperties)[MemoizeCache]
+    }
+    return undefined
+}
 
 /**
  * Memoize function accepts function as a paramter and returns function with
@@ -284,7 +60,7 @@ export function memoize<P1, P2, P3, P4, P5, R>(
  * @param {Function | string} options option can be callback to resolve key or
  * predefined strategies for caching name. This parameter is optional.
  * 'default' parameter is default
- *  - (parameters) => string - callback to resolve key, inner cache is ES6 kMap
+ *  - (parameters) => string - callback to resolve key, inner cache is ES6 Map
  *  - 'deep' - compares parameters to be deep equal,
  *  with npm package 'fast-dee-equal'
  *  - 'string' - turns parameters in to string with JSON.stringify, inner cache
@@ -292,6 +68,7 @@ export function memoize<P1, P2, P3, P4, P5, R>(
  *  - 'weak' - uses first paramter, that must be typeof object as a key, inner
  * cache is ES6 WeakMap
  *  - 'default' - compares parameters with Object.is algorithm
+ * Cache can be accessed by {@link MemoizeCache} symbol.
  * @returns function returning cached results with same contract as function
  *          in first paramter
  * @example
@@ -300,6 +77,7 @@ export function memoize<P1, P2, P3, P4, P5, R>(
  *  memo(param)
  *  memo(param) // cache hit
  *  memo({a: 'one'}) // no cache hit, because reference is different
+ *  const cache = memo[MemoizeCache]
  *
  *  const memoD = memoize(calculate, 'deep')
  *  memoD(param)
@@ -315,12 +93,13 @@ export function memoize<P1, P2, P3, P4, P5, R>(
  * @see https://www.ecma-international.org/ecma-262/6.0/#sec-object.is
  * @see https://www.npmjs.com/package/fast-deep-equal
  */
-export function memoize<R>(
-    func: (...p: unknown[]) => R,
-    options: MemoizeOptions<(...p: unknown[]) => string> = 'default'
-): (...p: unknown[]) => R & MemoizedProperties {
-    const strategy = resolveStrategy<R>(options)
-    const memoizedFunction = function memoized(this: Function, ...parameters: unknown[]): R {
+export function memoize<F extends Function>(
+    this: any,
+    func: F,
+    options: MemoizeOptions = 'default'
+): F & MemoizedProperties {
+    const strategy = resolveStrategy<any>(options)
+    const memoizedFunction = function memoized(this: Function, ...parameters: any[]): F {
         const key = strategy.unwrap(...parameters)
         if (strategy.cache.has(key)) {
             return strategy.cache.get(key)!
@@ -335,10 +114,16 @@ export function memoize<R>(
         value: `memoized[ ${func.name} ]`,
         writable: false
     })
-    return memoizedFunction as (...p: unknown[]) => R & MemoizedProperties
+    Object.defineProperty(memoizedFunction, MemoizeCache, {
+        configurable: false,
+        enumerable: false,
+        value: strategy.cache,
+        writable: false
+    })
+    return memoizedFunction as unknown as F & MemoizedProperties
 }
 
-const strategies: Record<StrategyName, {getCache: () => CacheMap<any, any>, key: Function}> = {
+const strategies: Record<StrategyName, { getCache: () => CacheMap<any, any>, key: Function }> = {
     deep: {
         getCache: () => new ArrayKeyMap(equals),
         key: passThrough
@@ -352,12 +137,12 @@ const strategies: Record<StrategyName, {getCache: () => CacheMap<any, any>, key:
         key: stringify
     },
     weak: {
-        getCache: () => new WeakMap(),
+        getCache: () => new FullWeakMap(),
         key: getFirstParam
     },
 }
 
-function resolveStrategy<R>(opts: MemoizeOptions<(...p: unknown[]) => string>): MemoStrategy<R> {
+function resolveStrategy<R>(opts: MemoizeOptions): MemoStrategy<R> {
     if (typeof opts === 'string') {
         const s = strategies[opts]
         return {

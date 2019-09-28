@@ -5,13 +5,38 @@
     ],
     "jsRules": {},
     "rules": {
-        "quotemark": [true, "single"],
-        "semicolon": [true, "never"],
-        "interface-name": [false],
-        "trailing-comma": [false],
-        "ban-types": [true, ["Object", "Use 'object' instead."], ["String", "Use 'string' instead"]],
-        "member-access": [false],
-        "array-type": [false]
+        "callable-types": false,
+        "quotemark": [
+            true,
+            "single"
+        ],
+        "semicolon": [
+            true,
+            "never"
+        ],
+        "interface-name": [
+            false
+        ],
+        "trailing-comma": [
+            false
+        ],
+        "ban-types": [
+            true,
+            [
+                "Object",
+                "Use 'object' instead."
+            ],
+            [
+                "String",
+                "Use 'string' instead"
+            ]
+        ],
+        "member-access": [
+            false
+        ],
+        "array-type": [
+            false
+        ]
     },
     "rulesDirectory": []
 }

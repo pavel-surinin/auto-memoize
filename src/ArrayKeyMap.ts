@@ -17,4 +17,7 @@ export class ArrayKeyMap<R> implements CacheMap<unknown[], R> {
         this.cache.push({ key, result })
         return this
     }
+    clear(): void {
+        this.cache = []
+    }
 }
