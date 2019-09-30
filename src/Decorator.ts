@@ -3,12 +3,12 @@ import { MemoizeOptions } from './types'
 
 /**
  * Class Decorator used to created same instance of class when same parameters are passed.
- * It follows functional design pattern memoize, also Flyweight design pattern,
+ * It follows functional design pattern memoize, also flyweight design pattern,
  * when one instance of Class is created once with exact state.
  * It defines how objects with state can be shared.
  * If class constructor has no parameters, decorated with 'CreateOnce' it becomes singleton.
- * It this class is extended, effect of decorator will be applied on child classes,
- * parent constructor will always be constructor that creates class instance. Even if child
+ * If this class is extended, effect of decorator will be applied on child classes.
+ * Parent constructor will always be constructor that creates class instance. Even if child
  * constructor accepts different parameters.
  * If child class is decorated, child class will have cache effect.
  * It will cache instances by 'default' 'auto-memoize' strategy.
@@ -28,8 +28,8 @@ export function CreateOnce<T extends { new(...args: any[]): {} }>(ClassConstruct
  * It defines how objects with state can be shared.
  * It will cache instances by strategy from decorator parameter.
  * Decorator {@link CreateOnce} is preconfigured with default cache hit strategy.
- * It this class is extended, effect of decorator will be applied on child classes,
- * parent constructor will always be constructor that creates class instance. Even if child
+ * If this class is extended, effect of decorator will be applied on child classes.
+ * Parent constructor will always be constructor that creates class instance. Even if child
  * constructor accepts different parameters.
  * If child class is decorated, child class will have cache effect.
  *

@@ -9,7 +9,7 @@ npm i -S auto-memoize
 ```
 
 ```javascript
-import { memoize, CreateOnce } from 'auto-memoize'
+import { memoize, CreateOnce, CallOnce } from 'auto-memoize'
 import { fibo } from './fibonaci'
 
 // memoize function
@@ -89,7 +89,7 @@ memoCalc({a: 'one'}, 1) // no cache hit, because reference is different
 ```
 
 ## WeakMap implementation
-Caches by first parameter as a key and using ES6 [WeakMap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap) as a cache. Garbage collector automatically removes entries from cache, when no references for keys are present.
+Caches by **first** parameter as a key and using ES6 [WeakMap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap) as a cache. Garbage collector automatically removes entries from cache, when no references for keys are present.
 ```javascript
 const calc = require('expensive-calculation')
 const { memoize } = require('auto-memoize')
@@ -217,7 +217,7 @@ Typings includes types for:
  - memoized function return type
   
 # getCache
-Utility function to get cache instance from memoized function.
+Utility function to get cache instance from memoized function, class or method.
 It will return instance of `CacheMap`. It enables you to retrieve cache records and invalidate cache.
 
 ## CacheMap
@@ -240,9 +240,10 @@ export interface CacheMap<K = any, V = any> {
 import { getCache, CreateOnce, CallOnce, memoize } from 'auto-memoize'
 import { fibo } from './fibonaci'
 
-// cache from meoized function
 const memo = memoize(fibo)
 memo(5)
+
+// cache from meoized function
 getCache(memo).has([5]) // true
 getCache(memo).clear()
 getCache(memo).has([5]) // false
@@ -260,10 +261,11 @@ class Person {
   }
 }
 const person = new Person('A', 'B')
-person.greet('Hello'
-)
+person.greet('Hello')
+
 // cache from  decorated 'CreateOnce' or 'CreateOnceBy' class
 getCache(Person)
+
 // cache from  decorated 'CallOnce' or 'CallOnceBy' class
 getCache(person.greet)
 ```
@@ -273,39 +275,37 @@ getCache(person.greet)
 ## Docs
 
 ### @CreateOnce
-Class Decorator used to created same instance of class when same parameters are passed.
-It follows functional design pattern memoize, also Flyweight design pattern, 
-when one instance of Class is created once with exact state.
+`Class` Decorator used to create same instance of class when same parameters are passed.
+It follows functional design pattern *memoize*, also *Flyweight* design pattern, 
+when one instance of `Class` is created once with exact state.
 It defines how objects with state can be shared.
-If class constructor has no parameters, decorated with 'CreateOnce' it becomes singleton.
-It this class is extended, effect of decorator will be applied on child classes, 
-parent constructor will always be constructor that creates class instance. Even if child 
+If class constructor has no parameters, class decorated with `CreateOnce` becomes singleton.
+If this class is extended, effect of decorator will be applied on child classes. Parent constructor will always be constructor that creates class instance. Even if child 
 constructor accepts different parameters.
 If child class is decorated, child class will have cache effect.
 It will cache instances by [default](#default-implementation) 'auto-memoize' strategy.
 Decorator [@CreateOnceBy](#@createonceby) can be configured with other cache hit strategy
 
 ### @CreateOnceBy
-Class Decorator used to created same instance of class when same parameters are passed.
-It follows functional design pattern memoize, also Flyweight design pattern, 
-when one instance of Class is created once with exact state.
+`Class` Decorator used to created same instance of class when same parameters are passed.
+It follows functional design pattern *memoize*, also *Flyweight* design pattern, 
+when one instance of `Class` is created once with exact state.
 It defines how objects with state can be shared.
 It will cache instances by strategy from decorator parameter.
 Decorator [@CreateOnce](#@createonce) is preconfigured with [default](#default-implementation) cache hit strategy.
-It this class is extended, effect of decorator will be applied on child classes, 
-parent constructor will always be constructor that creates class instance. Even if child 
+If this class is extended, effect of decorator will be applied on child classes. Parent constructor will always be constructor that creates class instance. Even if child 
 constructor accepts different parameters.
 If child class is decorated, child class will have cache effect.
 
 ### @CallOnce
-Class method decorator used to create 'memoized' class method. Method that will return 
-same output with same parameters passed. It follows memoize functional design pattern.
-It will cache by [default](#default-implementation) 'auto-memoize' strategy.
+`Class` method decorator used to create *memoized* class method. Method that will return 
+same output with same parameters passed. It follows *memoize* functional design pattern.
+It will cache by [default](#default-implementation) `auto-memoize` strategy.
 Decorator [@CallOnceBy](#@callonceby) can be configured with other cache hit strategy.
 
 ### @CallOnceBy
-Class method decorator used to create 'memoized' class method. Method that will return 
-same output with same parameters passed. It follows memoize functional design pattern.
+`Class` method decorator used to create 'memoized' class method. Method that will return 
+same output with same parameters passed. It follows *memoize* functional design pattern.
 It must be configured with cache hit strategy.
 Decorator [@CallOnce](#@callonce) is already preconfgured with [default](#default-implementation) strategy.
 
@@ -329,6 +329,16 @@ class Greeter {
       return { greet: `${this.greeting}, ${name}!` }
     }
 }
+
+const greeter1 = new Greeter('Hello')
+const greeter2 = new Greeter('Hello')
+greeter1 == greeter2 // true
+
+const greet1 = greeter1.greet('Boris')
+const greet2 = greeter1.greet('Boris')
+const greet3 = greeter2.greet('Boris')
+greet1 == greet2 // true
+greet1 == greet3 // true
 ```
 
 ### Caching with provided strategy
@@ -347,9 +357,18 @@ class CustomGreeter {
     // method with cache
     @CallOnceBy(person => person.name)
     greet(person) {
-        return { greet: `${this.greeting}, ${person.name}!` }
+      return { greet: `${this.greeting}, ${person.name}!` }
     }
 }
+  const greeter1 = new Greeter('Hello')
+  const greeter2 = new Greeter('Hello')
+  greeter1 == greeter2 // true
+  
+  const greet1 = greeter1.greet({name: 'Boris'})
+  const greet2 = greeter1.greet({name: 'Boris'})
+  const greet3 = greeter2.greet({name: 'Boris'})
+  greet1 == greet2 // true
+  greet1 == greet3 // true
 ```
 
 ### Class Singleton
@@ -359,10 +378,13 @@ import { CreateOnce } from 'auto-memoize';
 // Always will return same instance of class
 @CreateOnce
 class Greeter {
-    constructor() {
+  constructor() {
     }
-    greet(name) {
-        return { greet: `Hello, ${name}!` }
+    greet(person) {
+      return { greet: `Hello, ${person.name}!` }
     }
 }
+const greeter1 = new Greeter()
+const greeter2 = new Greeter()
+greeter1 == greeter2 // true
 ```
